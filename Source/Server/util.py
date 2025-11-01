@@ -2,19 +2,15 @@ import pandas as pd
 import numpy as np
 from scipy import spatial
 import operator
-import ast
+import joblib
 from models import MovieRecommendationRow,MoviesRecommendationTableset
+from sentence_transformers import SentenceTransformer
 
 # Global Variables Used by the Aplication
-moviesDataset = pd.read_csv("data/FinalMovies.csv")
-
-# Converts the text columns to real list
-columns_to_convert = ["genres_bin", "cast_bin", "director_bin", "words_bin"]
-for col in columns_to_convert:
-    moviesDataset[col] = moviesDataset[col].apply(lambda x: np.array(ast.literal_eval(x), dtype=bool)) # type: ignore
-
-# Convert the genres column to a list
-moviesDataset["genres"] = moviesDataset["genres"].apply(ast.literal_eval)
+moviesDataset = pd.read_pickle("data/FinalMoviesFiltered.pk1")
+descriptionModel = SentenceTransformer('modelsML/sentence_transformer_model')
+knnModel = joblib.load('modelsML/knn_model.joblib')
+X = joblib.load('modelsML/movie_embeddings.joblib')
 
 def Similarity(movieId1, movieId2):
     a = moviesDataset.iloc[movieId1]
@@ -55,7 +51,7 @@ def GetNeighbors(baseMovie, K):
     return neighbors
 
 
-def PredictScoreByName(name, debugMode):
+def PredictScoreByTitle(name, debugMode):
 
     #Search the Target Movie 
     new_movie = FindMovieByTitle(name)
@@ -75,7 +71,7 @@ def PredictScoreByName(name, debugMode):
         Genres=new_movie["genres"].values[0],
         Rating=new_movie["vote_average"].values[0]
         )
-    movies = MoviesRecommendationTableset(SourceMovie=sourceMovie,MovieRecommendations=[])
+    recomendedMovies = MoviesRecommendationTableset(SourceMovie=sourceMovie,MovieRecommendations=[])
     
     if(debugMode):
         print("\nRecommended moviesDataset: \n")
@@ -86,7 +82,7 @@ def PredictScoreByName(name, debugMode):
         Genres=moviesDataset.iloc[neighbor[0]].iloc[1],
         Rating=moviesDataset.iloc[neighbor[0]].iloc[2]
         )
-        movies.MovieRecommendations.append(movie)
+        recomendedMovies.MovieRecommendations.append(movie)
 
         if(debugMode):
             print(
@@ -110,21 +106,69 @@ def PredictScoreByName(name, debugMode):
             % (new_movie["original_title"].values[0], new_movie["vote_average"].values[0])
         )
 
-    return movies
+    return recomendedMovies
 
 
 def PredictScoreByDescrption(description, debugMode):
-    return
+    filteredDescription = filterString(description)
+
+    if(not filteredDescription or len(filteredDescription)==0):
+        raise RuntimeError(f"The Description is not Valid")
+    
+    
+    query_vec = descriptionModel.encode([filteredDescription])
+    knnModel.fit(X)
+    _, indices = knnModel.kneighbors(query_vec)
+
+    recomendedMoviesDataset = moviesDataset.iloc[indices[0]]
+
+    sourceMovie = MovieRecommendationRow(
+        Title=description,
+        Genres=[],
+        Rating=0
+        )
+    recomendedMovies = MoviesRecommendationTableset(SourceMovie=sourceMovie,MovieRecommendations=[])
+    
+    for _ ,movie in recomendedMoviesDataset.iterrows():
+        movie = MovieRecommendationRow(
+        Title=movie["original_title"],
+        Genres=movie["genres"],
+        Rating=movie["vote_average"]
+        )
+        recomendedMovies.MovieRecommendations.append(movie)
+        
+    return recomendedMovies
 
 def PredictScoreByNameAndDescription(title,description,debugMode):
     return
 
-# On the future a better search method can be useful
-def FindMovieByTitle(name):
-    result = moviesDataset[moviesDataset["original_title"].str.contains(name)]
+#On the future a better search method can be useful
+def FindMovieByTitle(title):
+    filteredTitle = filterString(title)
+
+    result = moviesDataset[
+    moviesDataset["filtered_title"].str.contains(rf'\b{filteredTitle}\b', case=False, regex=True)
+    ]
+
     if(result.empty):
         return result
     
     #Maybe a seccond search can be useful if we have multiple matches
     return result.iloc[0].to_frame().T
+
+#Delete Special Caracters, upperCase, Duplicate Spaces
+def filterString(string):
+    filteredString = ""
+    spaceCount = 0
+    for c in string:
+        if(c.isalpha() or c.isdigit()):
+            filteredString+=c.upper()
+            spaceCount = 0 
+        if(c==" " and spaceCount == 0 and len(filteredString)>0):
+            filteredString+=c
+            spaceCount = 1
     
+    if(filteredString.endswith(" ")):
+        filteredString = filteredString[:-1]
+
+    return filteredString
