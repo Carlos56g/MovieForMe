@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import './CustomElements.css'
 import axios, { AxiosError } from "axios";
 import type { MovieResponse } from './Types';
 import { movieForMeApiURL } from './movieForMeAPI/config';
