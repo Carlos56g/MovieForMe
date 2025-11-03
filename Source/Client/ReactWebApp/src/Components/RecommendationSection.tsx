@@ -29,8 +29,8 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
         <div>
           <h2>Your Description</h2>
           <div className='sourceMovie'>
-            <div className='movieCard'>
-              <h1>{SourceMovie.Title}</h1>
+            <div className='movieDescription'>
+              <h2>{SourceMovie.Title}</h2>
             </div>
           </div>
         </div>

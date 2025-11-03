@@ -12,6 +12,13 @@
   justify-items: center;
 }
 
+.movieDescription {
+  background-color: #1c1c1c;
+  color: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
 
 @media (max-width: 1200px) {
   .moviesRecommendations {

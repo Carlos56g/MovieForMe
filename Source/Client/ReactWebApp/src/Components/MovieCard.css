@@ -10,7 +10,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  height: 400px;
+  height: auto;
 }
 
 .movieCard:hover {
@@ -20,7 +20,7 @@
 
 .movieCard img {
   width: 100%;
-  height: 330px;
+  height: 300px;
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 12px;
