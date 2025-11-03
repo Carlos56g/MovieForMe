@@ -7,7 +7,7 @@ from models import MovieRecommendationRow,MoviesRecommendationTableset
 from sentence_transformers import SentenceTransformer
 
 # Global Variables Used by the Aplication
-moviesDataset = pd.read_pickle("data/FinalMoviesFiltered.pk1")
+moviesDataset = pd.read_pickle("data/FinalMoviesFiltered_V2.pk1")
 descriptionModel = SentenceTransformer('modelsML/sentence_transformer_model')
 knnModel = joblib.load('modelsML/knn_model.joblib')
 X = joblib.load('modelsML/movie_embeddings.joblib')
@@ -69,7 +69,8 @@ def PredictScoreByTitle(name, debugMode):
     sourceMovie = MovieRecommendationRow(
         Title=new_movie["original_title"].values[0],
         Genres=new_movie["genres"].values[0],
-        Rating=new_movie["vote_average"].values[0]
+        Rating=new_movie["vote_average"].values[0],
+        HomePageURL=new_movie["homepage"].values[0]
         )
     recomendedMovies = MoviesRecommendationTableset(SourceMovie=sourceMovie,MovieRecommendations=[])
     
@@ -80,7 +81,8 @@ def PredictScoreByTitle(name, debugMode):
         movie = MovieRecommendationRow(
         Title=moviesDataset.iloc[neighbor[0]].iloc[0],
         Genres=moviesDataset.iloc[neighbor[0]].iloc[1],
-        Rating=moviesDataset.iloc[neighbor[0]].iloc[2]
+        Rating=moviesDataset.iloc[neighbor[0]].iloc[2],
+        HomePageURL=moviesDataset.iloc[neighbor[0]].iloc[-1] #Since was the last Column Added on the file
         )
         recomendedMovies.MovieRecommendations.append(movie)
 

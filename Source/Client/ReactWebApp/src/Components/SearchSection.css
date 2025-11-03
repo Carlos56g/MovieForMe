@@ -1,0 +1,45 @@
+.searchSection {
+    transition: all 0.3s ease;
+    opacity: 1;
+}
+
+.showSection {
+    opacity: 1;
+}
+
+.hideSection {
+    overflow: hidden;
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+    pointer-events: none;
+}
+
+.disableInput {
+    opacity: 0.6;
+}
+
+.enabledInput {
+    opacity: 1;
+}
+
+input[type="text"] {
+    border: 2px solid;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 20px;
+}
+
+textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 2px solid;
+    border-radius: 4px;
+    height: 50vh;
+    font-size: 18px;
+}
+
+.section {
+    margin: 20px;
+}

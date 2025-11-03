@@ -1,0 +1,32 @@
+.sourceMovie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.moviesRecommendations {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  /* 5 columnas fijas */
+  gap: 20px;
+  justify-items: center;
+}
+
+
+@media (max-width: 1200px) {
+  .moviesRecommendations {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .moviesRecommendations {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .moviesRecommendations {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

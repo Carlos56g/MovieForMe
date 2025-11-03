@@ -36,7 +36,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
-  margin: 15px;
+  margin: 20px;
 }
 
 button:hover {
@@ -46,27 +46,6 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
-input[type="text"] {
-  border: 2px solid;
-  padding: 8px;
-  border-radius: 4px;
-  font-size: 20px;
-}
-
-textarea{
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  border: 2px solid;
-  border-radius: 4px;
-  height: 50vh;
-  font-size: 18px;
-}
-
-.section{
-  margin: 20px;
 }
 
 @media (prefers-color-scheme: light) {

@@ -10,6 +10,8 @@ class MovieRecommendationRow(BaseModel):
     Title: str
     Genres: list[str]
     Rating: float
+    HomePageURL: str | None = None
+    PosterURL: str | None = None
 
 class MoviesRecommendationTableset(BaseModel):
     MovieRecommendations: list[MovieRecommendationRow]
