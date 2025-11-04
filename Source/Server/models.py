@@ -16,3 +16,8 @@ class MovieRecommendationRow(BaseModel):
 class MoviesRecommendationTableset(BaseModel):
     MovieRecommendations: list[MovieRecommendationRow]
     SourceMovie: MovieRecommendationRow
+
+# Titles Response for AutoComplete
+class Title(BaseModel):
+    ID: int
+    Title: str

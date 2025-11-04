@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-import util
-from models import MovieRequest
+from util import PredictScoreByDescrption,PredictScoreByTitle,FindMoviesByTitle,ConvertMovieDataFrameToTitleList
+from models import MovieRequest,Title
 
 app = FastAPI()
 
@@ -19,11 +19,11 @@ app.add_middleware(
 )
 
 
-@app.post("/getMoviesRecomendationsByTitle")
-async def getMoviesRecomendationsByTitle(userRequest: MovieRequest):
+@app.post("/api/movies/recommendations/title")
+async def GetMoviesRecomendationsByTitle(userRequest: MovieRequest):
     try:
         if userRequest.Title and len(userRequest.Title) > 0:
-            moviesRecomendations = util.PredictScoreByTitle(userRequest.Title, userRequest.DebugMode)
+            moviesRecomendations = PredictScoreByTitle(userRequest.Title, userRequest.DebugMode)
         else:
             raise HTTPException(status_code=400, detail="A Movie Title is Required")
     
@@ -33,11 +33,11 @@ async def getMoviesRecomendationsByTitle(userRequest: MovieRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/getMoviesRecomendationsByDescription")
-async def getMoviesRecomendationsByDescription(userRequest: MovieRequest):
+@app.post("/api/movies/recommendations/description")
+async def GetMoviesRecomendationsByDescription(userRequest: MovieRequest):
     try:
         if userRequest.Description and len(userRequest.Description) > 0:
-            moviesRecomendations = util.PredictScoreByDescrption(userRequest.Description, userRequest.DebugMode)
+            moviesRecomendations = PredictScoreByDescrption(userRequest.Description, userRequest.DebugMode)
         else:
             raise HTTPException(status_code=400, detail="A Movie Description is Required")
     
@@ -45,3 +45,17 @@ async def getMoviesRecomendationsByDescription(userRequest: MovieRequest):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+@app.get("/api/movies/search/title", response_model=list[Title])
+def SearchMovies(q: str = Query(..., min_length=1)):
+    try:
+        result = FindMoviesByTitle(q)
+        titleList =  ConvertMovieDataFrameToTitleList(result)
+        return titleList
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+    

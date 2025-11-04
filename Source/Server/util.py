@@ -3,11 +3,11 @@ import numpy as np
 from scipy import spatial
 import operator
 import joblib
-from models import MovieRecommendationRow,MoviesRecommendationTableset
+from models import MovieRecommendationRow,MoviesRecommendationTableset,Title
 from sentence_transformers import SentenceTransformer
 
 # Global Variables Used by the Aplication
-moviesDataset = pd.read_pickle("data/FinalMoviesFiltered_V2.pk1")
+moviesDataset = pd.read_pickle("data/FinalMoviesFiltered_V3.pk1")
 descriptionModel = SentenceTransformer('modelsML/sentence_transformer_model')
 knnModel = joblib.load('modelsML/knn_model.joblib')
 X = joblib.load('modelsML/movie_embeddings.joblib')
@@ -72,6 +72,7 @@ def PredictScoreByTitle(name, debugMode):
         Rating=new_movie["vote_average"].values[0],
         HomePageURL=new_movie["homepage"].values[0]
         )
+    
     recomendedMovies = MoviesRecommendationTableset(SourceMovie=sourceMovie,MovieRecommendations=[])
     
     if(debugMode):
@@ -155,7 +156,12 @@ def FindMovieByTitle(title):
     if(result.empty):
         return result
     
-    #Maybe a seccond search can be useful if we have multiple matches
+    result = result.sort_values(
+        by="filtered_title",
+        key=lambda col: col.str.len(),
+        ascending=True
+    )
+
     return result.iloc[0].to_frame().T
 
 #Delete Special Caracters, upperCase, Duplicate Spaces
@@ -174,3 +180,35 @@ def filterString(string):
         filteredString = filteredString[:-1]
 
     return filteredString
+
+#Return the 5 movies that start with the title provided as a DataFrame
+def FindMoviesByTitle(title, numResults = 5):
+    filteredTitle = filterString(title)
+    results = moviesDataset[
+        moviesDataset["filtered_title"].str.contains(filteredTitle, na=False)
+    ]
+
+    if results.empty:
+        return results
+
+    results = results.sort_values(
+        by="filtered_title",
+        key=lambda col: col.str.len(),
+        ascending=True
+    )
+    return results.head(numResults)
+
+    
+def ConvertMovieDataFrameToTitleList(movieDataFrame):
+    if(movieDataFrame is None):
+       return None
+    
+    titleList = []
+    for _,row in movieDataFrame.iterrows():
+        title = Title(
+            ID=int(row["new_id"]),
+            Title=row["original_title"]
+        )
+        titleList.append(title)
+
+    return titleList

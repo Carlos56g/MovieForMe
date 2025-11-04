@@ -12,7 +12,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   clearResults,
 }) => {
 
-  if(movieForMeResponse==null)
+  if (movieForMeResponse == null)
     return null;
 
   const { SourceMovie, MovieRecommendations } = movieForMeResponse;
@@ -20,13 +20,19 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
     <section className='recommendationSection'>
       {SourceMovie.Rating !== 0 ? (
         <div>
-          <h2>Your Movie</h2>
-          <div className='sourceMovie'>
-            <MovieCard movie={SourceMovie} />
+          <div className='cornerSourceMovieCard'>
+            <h2>{SourceMovie.Title}</h2>
+          </div>
+          <div className='sourceMovieCard'>
+            <h2>Your Movie</h2>
+            <div className='sourceMovie'>
+              <MovieCard movie={SourceMovie} />
+            </div>
           </div>
         </div>
+
       ) : (
-        <div>
+        <div className='sourceDescriptionCard'>
           <h2>Your Description</h2>
           <div className='sourceMovie'>
             <div className='movieDescription'>

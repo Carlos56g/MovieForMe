@@ -1,6 +1,8 @@
 import React from 'react';
 import ToggleSwitch from './ToggleSwitch';
 import "./SearchSection.css";
+import { movieForMeApiURL } from '../APIs/config';
+import SearchBar from './AutoComplete';
 
 interface SearchSectionProps {
   title: string;
@@ -36,10 +38,10 @@ const SearchSection: React.FC<SearchSectionProps> = ({
 
       <div className={`searchSection ${searchByDescription ? "hideSection" : "showSection"}`}>
         <h2>Search similar movies by Title</h2>
-        <input type='text'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          disabled={inputsDisabled} />
+        <SearchBar searchValue={title}
+        setSearchValue={setTitle}
+        searchAPIURL = {`${movieForMeApiURL}search/title`}
+        />
       </div>
 
       <div className={`searchSection ${searchByDescription ? "showSection" : "hideSection"}`}>

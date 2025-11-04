@@ -49,9 +49,9 @@ function MovieForMeHome() {
   const handleSearchMovies = async () => {
     setShowLoading(true);
     setInputsDisabled(true);
-    var movieForMeAPIRoute = movieForMeApiURL;
+    var movieForMeAPIRoute = movieForMeApiURL + "recommendations/";
     try {
-      movieForMeAPIRoute += searchByDescription ? "/getMoviesRecomendationsByDescription" : "/getMoviesRecomendationsByTitle";
+      movieForMeAPIRoute += searchByDescription ? "description" : "title";
 
       const res = await axios.post(movieForMeAPIRoute, {
         Title: title,
@@ -62,11 +62,12 @@ function MovieForMeHome() {
       const updatedResponse = await getPostersURL(res.data);
       setMovieForMeResponse(updatedResponse);
       setInputsDisabled(false);
-
     } catch (err) {
       handleError(err as AxiosError<APIError>);
     }
-    setShowLoading(false);
+    finally{
+      setShowLoading(false);
+    }
   };
 
   const getPostersURL = async (responseData: MovieResponse) => {
