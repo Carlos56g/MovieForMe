@@ -14,3 +14,8 @@ export interface MovieResponse {
 export interface APIError {
   detail: string;
 }
+
+export interface ResultSuggestion {
+    Title: string;
+    ID: number;
+}

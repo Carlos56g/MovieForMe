@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './MovieForMeHome.css'
 import axios, { AxiosError } from "axios";
-import type { Movie, MovieResponse, APIError } from './Types';
+import type { Movie, MovieResponse, APIError,ResultSuggestion } from './Types';
 import { movieForMeApiURL, omdbAPIURL } from './APIs/config';
 import RecomendationSection from "./Components/RecommendationSection";
 import ErrorCard from "./Components/ErrorCard";
@@ -15,6 +15,7 @@ function MovieForMeHome() {
   const [description, setDescription] = useState(""); //Description User Input
   const [movieForMeResponse, setMovieForMeResponse] = useState<MovieResponse | null>(null); //Response by the API (Success)
   const [error, setError] = useState<AxiosError<APIError> | null>(null); //Response by the API (Error)
+  const [suggestions, setSuggestions] = useState<ResultSuggestion[]>([]);
 
   //Aux Variables
   const [searchByDescription, setSearchByDescription] = useState(false); //Boolean if is search by description
@@ -67,6 +68,7 @@ function MovieForMeHome() {
     }
     finally{
       setShowLoading(false);
+      setSuggestions([]);
     }
   };
 
@@ -109,6 +111,8 @@ function MovieForMeHome() {
         toggleSearchByDescription={toggleSearchByDescription}
         handleSearchMovies={handleSearchMovies}
         inputsDisabled={inputsDisabled}
+        setSuggestions={setSuggestions}
+        suggestions={suggestions}
       />
 
       <LoadingDots show={showLoading} />

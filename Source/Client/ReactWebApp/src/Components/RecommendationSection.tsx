@@ -17,11 +17,11 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = ({
 
   const { SourceMovie, MovieRecommendations } = movieForMeResponse;
   return (
-    <section className='recommendationSection'>
+    <section>
       {SourceMovie.Rating !== 0 ? (
         <div>
-          <div className='cornerSourceMovieCard'>
-            <h2>{SourceMovie.Title}</h2>
+          <div className='verticalMovieTitle'>
+            <p>{SourceMovie.Title}</p>
           </div>
           <div className='sourceMovieCard'>
             <h2>Your Movie</h2>

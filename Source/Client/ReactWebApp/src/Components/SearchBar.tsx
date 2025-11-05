@@ -1,20 +1,20 @@
 import { useEffect, useState, useRef } from 'react';
-import './AutoComplete.css';
+import './SearchBar.css';
 import axios from 'axios';
+import type{ ResultSuggestion } from '../Types';
 
 interface SearchBarProps {
     searchValue: string;
     searchAPIURL: string;
     setSearchValue: (value: string) => void;
+    suggestions: ResultSuggestion[];
+    setSuggestions: (value: ResultSuggestion[]) => void;
 }
 
-interface Result {
-    Title: string;
-    ID: number;
-}
 
-const SearchBar: React.FC<SearchBarProps> = ({ searchValue, setSearchValue, searchAPIURL }) => {
-    const [suggestions, setSuggestions] = useState<Result[]>([]);
+
+const SearchBar: React.FC<SearchBarProps> = ({ searchValue, setSearchValue, searchAPIURL, suggestions, setSuggestions }) => {
+    //const [suggestions, setSuggestions] = useState<Result[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const isSelecting = useRef(false);
 
