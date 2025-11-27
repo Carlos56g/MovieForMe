@@ -8,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 
 # Global Variables Used by the Aplication
 moviesDataset = pd.read_pickle("data/FinalMoviesFiltered_V3.pk1")
-descriptionModel = SentenceTransformer('modelsML/sentence_transformer_model')
+descriptionModel = SentenceTransformer('modelsML/sentence_transformer_model', device="cpu")
 knnModel = joblib.load('modelsML/knn_model.joblib')
 X = joblib.load('modelsML/movie_embeddings.joblib')
 

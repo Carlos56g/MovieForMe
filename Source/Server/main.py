@@ -6,16 +6,16 @@ from models import MovieRequest,Title
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173",  #React Port
-    "http://127.0.0.1:5173",
+    "https://carlos56g.github.io",        # GitHub Pages
+    "http://localhost:5173",              # Dev Env
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["POST"],
-    allow_headers=["POST"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
